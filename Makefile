@@ -1,4 +1,4 @@
 all:
-	g++ -W -Wall -Werror -ansi -pedantic main.cpp
+	g++ -W -Wall -Werror -ansi -pedantic main.cpp -o rshell
 rshell:
-	g++ -W -Wall -Werror -ansi -pedantic main.cpp
+	g++ -W -Wall -Werror -ansi -pedantic main.cpp -0 rhsell
