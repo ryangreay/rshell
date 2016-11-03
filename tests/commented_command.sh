@@ -6,38 +6,38 @@ make -f Makefile
 
 printf "\n"
 
-echo "ls "
+echo "ls #-a "
 bin/rshell << EOF
-ls 
+ls #-a 
 exit
 EOF
 
-echo "ls -a"
+echo "ls # -a"
 bin/rshell << EOF
-ls -a 
+ls # -a 
 exit
 EOF
 
-echo "pwd "
+echo "ls# -a"
 bin/rshell << EOF
-pwd
+ls# -a
 exit
 EOF
 
-echo "cd "
+echo "echo #hello"
 bin/rshell << EOF
-cd
+echo #hello
 exit
 EOF
 
-echo "echo hello "
+echo "mkdir #myDir"
 bin/rshell << EOF
-echo hello
+mkdir #myDir
 exit
 EOF
 
-echo "mkdir cat "
+echo "mkdir #cat; ls #-IR / "
 bin/rshell << EOF
-mkdir cat
+mkdir #cat; ls #-IR /
 exit
 EOF
