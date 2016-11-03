@@ -5,11 +5,11 @@ This project creates a command shell in C++ called rshell that can print a comma
 execute them. This rshell allows users the ability to combine/chain commands with ; && || onto one line for execution. 
 
 #Instructions
-Compile the code by running,
+Compile the code by running the following command at the base of the rshell repository,
 ````
 make
 ````
-at the base of the rshell repository. Run the code by calling the executable
+Run the code by calling the executable
 ````
 bin/rshell
 ````
