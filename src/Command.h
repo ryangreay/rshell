@@ -48,6 +48,8 @@ public:
 	//It uses fork, wait, and execvp to run commands
 	CompletionStatus RunCommand(int &status)
 	{
+		int cStatus = 0;
+		int process;
 	    //first check for an exit command to safely return
 	    //back to main and deallocate any data in the heap
 		if (!strcmp(command, "exit"))
@@ -81,22 +83,27 @@ public:
 				}
 				else if (pid == 0)
 				{
-				    string temp = ""; temp += command;
-					temp += " failed";
 					//execute the command provided with command and arguments
 					execvp(command, arguments);
 
 					//the execvp failed so we call perror
-					perror(temp.c_str());
+					perror(command);
 					compStatus = failed;
 					return failed;
 				}
 				else
 				{
-					// Wait for the child
-					if (waitpid(pid, 0, 0) < 0)
+					// wait on child with waitpid and use cStatus to
+					//determin whether the command succeeded
+					process = waitpid(pid, &cStatus, 0);
+					if (process < 0)
 					{
 						perror("Error waiting for the child process");
+						compStatus = failed;
+						return failed;
+					}
+					if (cStatus > 0)
+					{
 						compStatus = failed;
 						return failed;
 					}

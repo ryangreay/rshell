@@ -60,27 +60,37 @@ public:
 	{
 		//first command in queue is always solo and can be run independently
 		if (commands.size() > 0)
+		{
 			prevCompletionStatus = commands.at(0)->RunCommand(status);
+			if (status == 1)
+			    return;
+		}
 		for (unsigned i = 1; i < commands.size(); i++)
 		{
 			//if current command has a solo for execution
 			//status run it independently
 			if (commands.at(i)->execStatus == solo)
+			{
 				prevCompletionStatus = commands.at(i)->RunCommand(status);
+				if (status == 1)
+			    return;
+			}
 			//if current command has an and for execution 
 			//status and prev succeeded then run command
 			else if (commands.at(i)->execStatus == required && prevCompletionStatus == completed)
 			{
 				prevCompletionStatus = commands.at(i)->RunCommand(status);
+				if (status == 1)
+			    return;
 			}
 			//if current command has an or for execution
 			//status and prev failed then run command
 			else if (commands.at(i)->execStatus == optional && prevCompletionStatus == failed)
 			{
 				prevCompletionStatus = commands.at(i)->RunCommand(status);
-			}
-			if (status == 1)
+				if (status == 1)
 			    return;
+			}
 		}
 	}
 };

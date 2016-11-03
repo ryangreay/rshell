@@ -45,6 +45,7 @@ Command* createCommand(char* cmd, ExecutionStatus es)
 					arguments.push_back(temp); //minus the # at the end
 					if (i == 0)
 						commandName = temp;
+					goto comment;
 				}
 			}
 		}
@@ -103,7 +104,9 @@ int main()
 		//read in commands, parsing on #, ||, &&, ;
 		//creating as many instances of commands as needed 
 		//and pushing into cmdContainer
-		cout << user << "@" << hostname << "$ "; //give it the ability to print the username and hostname
+		
+		//give it the ability to print the username and hostname
+		cout << "[" << user << "@" << hostname << "]" << "$ ";
 		cin.getline(line, 400);
 	
 		split = strtok_r(line, ";", &context);
@@ -133,7 +136,7 @@ int main()
 		// and the program will exit the while loop
 		cmdContainer->runCommandQueue(status);
 		cmdContainer->clearCommandQueue();
-		cout << endl;
+		//cout << endl;
 	}
 	delete cmdContainer;
 	return 0;
