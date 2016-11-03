@@ -9,10 +9,11 @@ Compile the code by running,
 ````
 make
 ````
-Run the code by
+at the base of the rshell repository. Run the code by calling the executable
 ````
 bin/rshell
 ````
 
 #Bugs
-*****add some bugs later********
+One known bug is that if the user enters something random that is not a command such as, 'hello' and then tries to exit, it takes two
+tries to exit successfully.
