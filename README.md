@@ -15,5 +15,6 @@ bin/rshell
 ````
 
 #Bugs
-One known bug is that if the user enters something random that is not a command such as, 'hello' and then tries to exit, it takes two
-tries to exit successfully.
+-One known bug is that if the user enters something random that is not a command such as, 'hello' and then tries to exit, exit has to
+be called twice to successfully exit.
+-Another bug, pertaining to the .sh test cases, the test always end with an empty prompt line.
