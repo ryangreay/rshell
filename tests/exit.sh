@@ -38,6 +38,6 @@ EOF
 
 echo "Testing test -d test_test.sh || exit "
 bin/rshell << EOF
-Testing test -d test_test.sh || exit
+test -d test_test.sh || exit
 exit
 EOF
