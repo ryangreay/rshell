@@ -9,6 +9,6 @@ enum ExecutionStatus
 };
 enum CompletionStatus
 {
-	pending, failed, completed
+	pending, failed, completed, precedence
 };
 #endif

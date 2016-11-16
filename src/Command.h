@@ -3,8 +3,8 @@
 #include <iostream>
 #include <string>
 #include "unistd.h"
-#include "stdio.h"
 #include "signal.h"
+#include "sys/stat.h"
 #include "sys/types.h"
 #include "sys/wait.h"
 #include "ctype.h"
@@ -18,6 +18,8 @@ private:
 	char* command;
 	//the arguments associated with a command name
 	char** arguments;
+	//the number arguments present
+	int argumentSize;
 public:
 	//the current status of a command. This changes after
 	//RunCommand() is called in the runcommandqueue and is 
@@ -33,16 +35,22 @@ public:
 	    delete [] arguments;
 	}
 	//constructor
-	Command(ExecutionStatus es, CompletionStatus cs, char* cmd, char** args) 
+	Command(ExecutionStatus es, CompletionStatus cs, char* cmd, char** args, int size) 
 	{
 		execStatus = es;
 		compStatus = cs;
 		command = cmd;
 		arguments = args;
+		argumentSize = size;
+	}
+	string GetCommandName()
+	{
+		return string(command);
 	}
 	//this runs an individual command at a time
 	//It should have a provision for an error using perror
 	//It should have a provision for an exit command
+	//It should have a provision for the test command
 	//It should have a provision for cd command
 	//It should return the command status - completed or failed
 	//It uses fork, wait, and execvp to run commands
@@ -69,6 +77,51 @@ public:
 				else
 					chdir(arguments[1]);
 				perror(command);
+			}
+			else if (!strcmp(command, "test"))
+			{
+				struct stat info;
+				bool success = false;
+				if (arguments[1] == NULL) //no path and no flag
+					success = false;
+				else if (arguments[2] == NULL && string(arguments[1]) != "-e" &&
+					string(arguments[1]) != "-d" && string(arguments[1]) != "-f") //no flag
+				{
+					//check only if the directory/file exists 
+					if (lstat(arguments[1], &info) != 0)
+						success = false;
+					else
+						success = true;
+				}
+				else if (arguments[3] == NULL)
+				{
+					if (lstat(arguments[2], &info) == 0 && 
+						string(arguments[1]) == "-e")
+						success = true;
+					else if (lstat(arguments[2], &info) == 0 && 
+						(S_ISDIR(info.st_mode)) &&
+						string(arguments[1]) == "-d")
+						success = true;
+					else if (lstat(arguments[2], &info) == 0 && 
+						(S_ISREG(info.st_mode)) &&
+						string(arguments[1]) == "-f")
+						success = true;
+					else
+						success = false;
+				}
+				
+				if (success)
+				{
+					cout << "(True)" << endl;
+					compStatus = completed;
+					return completed;
+				}
+				else
+				{
+					cout << "(False)" << endl;
+					compStatus = failed;
+					return failed;
+				}
 			}
 			else
 			{
