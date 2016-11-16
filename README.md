@@ -19,4 +19,4 @@ bin/rshell
 be called twice to successfully exit.
 - Another bug, pertaining to the .sh test cases, the prompt lines are offset by 1. In other words, the prompt line is missing for
 the first line but then there is an extra prompt line at the end.
--There is currently undefined behavior with nested parenthesis.
+- There is currently undefined behavior with nested parenthesis.
