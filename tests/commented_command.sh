@@ -6,38 +6,32 @@ make -f Makefile
 
 printf "\n"
 
-echo "ls #-a "
+echo "Testing ls #-a "
 bin/rshell << EOF
 ls #-a 
 exit
 EOF
 
-echo "ls # -a"
+echo "Testing echo 1 && ls #ls "
 bin/rshell << EOF
-ls # -a 
+echo 1 && ls #ls 
 exit
 EOF
 
-echo "ls# -a"
+echo "Testing ls #-aaaaaaaa #-a "
 bin/rshell << EOF
-ls# -a
+ls #-aaaaaaaa #-a
 exit
 EOF
 
-echo "echo #hello"
+echo "Testing [#test_test.sh] "
 bin/rshell << EOF
-echo #hello
+[-e #test_test.sh]
 exit
 EOF
 
-echo "mkdir #myDir"
+echo "Testing test -e #test_test.sh "
 bin/rshell << EOF
-mkdir #myDir
-exit
-EOF
-
-echo "mkdir #cat; ls #-IR / "
-bin/rshell << EOF
-mkdir #cat; ls #-IR /
+test -e #test_test.sh
 exit
 EOF
