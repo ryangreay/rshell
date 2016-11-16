@@ -44,12 +44,6 @@ EOF
 
 echo "Testing with precedence, (test -d test_test.sh && echo success) || ([-f test_test.sh] && echo success2)" #false true success
 bin/rshell << EOF
-(test -d test_test.sh && echo success)  || ([-f test_test.sh] && echo success2) 
-exit
-EOF
-
-echo "Testing (echo a && echo b))))))) " #error
-bin/rshell << EOF
-(echo a && echo b)))))))
+(test -d tests/test_test.sh && echo success)  || ([-f tests/test_test.sh] && echo success) 
 exit
 EOF
