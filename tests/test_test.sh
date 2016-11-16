@@ -6,7 +6,6 @@ make -f Makefile
 
 printf "\n"
 
-echo "Testing test command with test_test.sh and flag -e" #pass
 bin/rshell << EOF
 test -e tests/test_test.sh
 exit
