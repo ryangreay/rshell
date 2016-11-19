@@ -12,10 +12,11 @@ class CommandContainer
 private:
 	//this tells current chained commands whether to run or not
 	CompletionStatus prevCompletionStatus;
+	CompletionStatus baseCompletionStatus;
 	//the "queue" / vector of commands that are ready to be run
 	//this queue constitutes all the commands entered on one command
 	//line at a time
-	vector<Command*> commands;
+	vector< vector<Command*> > commands;
 public:
 	//delete all commands in the "queue" (vector)
 	//so that there are no memory leaks
@@ -23,8 +24,11 @@ public:
 	{
 		for (unsigned i = 0; i < commands.size(); i++)
 		{
-			delete commands.at(i);
-			commands.at(i) = 0;
+			for (unsigned j = 0; j < commands.at(i).size(); j++)
+			{
+				delete commands.at(i).at(j);
+				commands.at(i).at(j) = 0;
+			}
 		}
 		commands.clear();
 	}
@@ -33,9 +37,9 @@ public:
 	{
 	}
 	//add a command to the queue
-	void addCommand(Command* cmd)
+	void addCommand(vector<Command*> cmds)
 	{
-		commands.push_back(cmd);
+		commands.push_back(cmds);
 	}
 	//print - for testing purposes only
 	//void print()
@@ -51,46 +55,67 @@ public:
 	{
 		for (unsigned i = 0; i < commands.size(); i++)
 		{
-			delete commands.at(i);
-			commands.at(i) = 0;
+			for (unsigned j = 0; j < commands.at(i).size(); j++)
+			{
+				delete commands.at(i).at(j);
+				commands.at(i).at(j) = 0;
+			}
 		}
 		commands.clear();
 	}
 	void runCommandQueue(int &status)
 	{
-		//first command in queue is always solo and can be run independently
-		if (commands.size() > 0)
+		for (unsigned j = 0; j < commands.size(); j++)
 		{
-			prevCompletionStatus = commands.at(0)->RunCommand(status);
-			if (status == 1)
-			    return;
-		}
-		for (unsigned i = 1; i < commands.size(); i++)
-		{
-			//if current command has a solo for execution
-			//status run it independently
-			if (commands.at(i)->execStatus == solo)
+			if (commands.at(j).at(0)->compStatus == precedence)
 			{
-				prevCompletionStatus = commands.at(i)->RunCommand(status);
-				if (status == 1)
-			    return;
+				if (baseCompletionStatus == completed && commands.at(j).at(0)->GetCommandName() == "&&")
+				{
+					j++;
+					goto runComms;
+				}
+				else if (baseCompletionStatus == failed && commands.at(j).at(0)->GetCommandName() == "||")
+				{
+					j++;
+					goto runComms;
+				}
+				else
+				{
+					j++;
+					goto finishedComms;
+				}
 			}
-			//if current command has an and for execution 
-			//status and prev succeeded then run command
-			else if (commands.at(i)->execStatus == required && prevCompletionStatus == completed)
+
+			runComms:
+			for (unsigned i = 0; i < commands.at(j).size(); i++)
 			{
-				prevCompletionStatus = commands.at(i)->RunCommand(status);
-				if (status == 1)
-			    return;
+				//if current command has a solo for execution
+				//status run it independently
+				if (commands.at(j).at(i)->execStatus == solo)
+				{
+					prevCompletionStatus = commands.at(j).at(i)->RunCommand(status);
+					if (status == 1)
+						return;
+				}
+				//if current command has an and for execution 
+				//status and prev succeeded then run command
+				else if (commands.at(j).at(i)->execStatus == required && prevCompletionStatus == completed)
+				{
+					prevCompletionStatus = commands.at(j).at(i)->RunCommand(status);
+					if (status == 1)
+						return;
+				}
+				//if current command has an or for execution
+				//status and prev failed then run command
+				else if (commands.at(j).at(i)->execStatus == optional && prevCompletionStatus == failed)
+				{
+					prevCompletionStatus = commands.at(j).at(i)->RunCommand(status);
+					if (status == 1)
+						return;
+				}
 			}
-			//if current command has an or for execution
-			//status and prev failed then run command
-			else if (commands.at(i)->execStatus == optional && prevCompletionStatus == failed)
-			{
-				prevCompletionStatus = commands.at(i)->RunCommand(status);
-				if (status == 1)
-			    return;
-			}
+			finishedComms:
+			baseCompletionStatus = prevCompletionStatus;
 		}
 	}
 };
