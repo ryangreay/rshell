@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <stdio.h>
+#include "stdlib.h"
 #include "unistd.h"
 #include "CommandContainer.h"
 #include "Command.h"
@@ -106,6 +107,8 @@ int main()
 	struct passwd* pwd = getpwuid(getuid());
 	char* user = pwd->pw_name;
 	char hostname[500]; gethostname(hostname, 500);
+	string output = string(user) + "@" + string(hostname);
+	string currDir = "";
 	//split string
 	bool andCheck = false;
 	bool orCheck = false;
@@ -129,13 +132,13 @@ int main()
 
 	while (status == 0)
 	{
-		cmdContainer->clearCommandQueue();
 		//read in commands, parsing on #, ||, &&, ;
 		//creating as many instances of commands as needed 
 		//and pushing into cmdContainer
 		
 		//give it the ability to print the username and hostname
-		cout << "[" << user << "@" << hostname << "]" << "$ ";
+		currDir = string(getenv("PWD")).substr(string(getenv("PWD")).find_last_of("/") + 1);
+		cout << "[" << output << " " << currDir << "]" << "$ ";
 		cin.getline(line, 400);
 	
 		split = strtok_r(line, ";", &context);

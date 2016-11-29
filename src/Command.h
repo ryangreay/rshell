@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include "unistd.h"
+#include "stdlib.h"
 #include "signal.h"
 #include "sys/stat.h"
 #include "sys/types.h"
@@ -72,11 +73,41 @@ public:
 		    //handled by itself
 			if (!strcmp(command, "cd"))
 			{
+				int retVal;
+				char* currDir = getenv("PWD");
+				char* prevDir = getenv("OLDPWD");
+				//go to home directory
 				if (arguments[1] == NULL)
-					chdir("/");
+					retVal = chdir(getenv("HOME"));
+				else if (string(arguments[1]) == "-")
+					retVal = chdir(prevDir);
 				else
-					chdir(arguments[1]);
-				perror(command);
+					retVal = chdir(arguments[1]);
+					
+				if (retVal == -1)
+				{
+					perror(command);
+					compStatus = failed;
+					return failed;
+				}
+				else
+				{
+					if (arguments[1] == NULL)
+					{
+						setenv("OLDPWD", currDir, 1);
+						setenv("PWD", getenv("HOME"), 1);
+					}
+					else if (string(arguments[1]) == "-")
+					{
+						setenv("OLDPWD", currDir, 1);
+						setenv("PWD", prevDir, 1);
+					}
+					else
+					{
+						setenv("OLDPWD", currDir, 1);
+						setenv("PWD", arguments[1], 1);
+					}
+				}
 			}
 			else if (!strcmp(command, "test"))
 			{
