@@ -39,7 +39,7 @@ cd ../../
 exit 
 EOF
 
--rm -rf tests/temp1_folder
+rm -rf tests/temp1_folder
 
 
 
