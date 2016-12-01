@@ -104,8 +104,13 @@ public:
 					}
 					else
 					{
+						char* newDir; newDir = (char *)malloc(strlen(currDir) + 2 + strlen(arguments[1]));
+						newDir = strcat(newDir, currDir);
+						char slash[2]; slash[0] = '/'; slash[1] = '\0';
+						newDir = strcat(newDir, slash);
+						newDir = strcat(newDir, arguments[1]);
 						setenv("OLDPWD", currDir, 1);
-						setenv("PWD", arguments[1], 1);
+						setenv("PWD", newDir/*arguments[1]*/, 1);
 					}
 				}
 			}
