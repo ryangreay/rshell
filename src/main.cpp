@@ -137,7 +137,7 @@ int main()
 		//and pushing into cmdContainer
 		
 		//give it the ability to print the username and hostname
-		currDir = string(getenv("PWD")).substr(string(getenv("PWD")).find_last_of("/") + 1);
+		currDir = string(getenv("PWD"));//.substr(string(getenv("PWD")).find_last_of("/") + 1);
 		cout << "[" << output << " " << currDir << "]" << "$ ";
 		cin.getline(line, 400);
 	
