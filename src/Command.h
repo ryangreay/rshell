@@ -105,7 +105,7 @@ public:
 					else
 					{
 						string newDirString = string(currDir) + "/" + string(arguments[1]);
-						vector<char> v(newDirString.begin(), newDirString.end());
+						vector<char> v(newDirString.begin(), newDirString.end()); v.push_back('\0');
 						char* newDir= &v[0];
 						setenv("OLDPWD", currDir, 1);
 						setenv("PWD", newDir, 1);
